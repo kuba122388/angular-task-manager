@@ -1,0 +1,17 @@
+<h1>Todo list</h1>
+
+@for (task of tasks(); track task.id) {
+<ul>
+    <li>
+        <ul>
+            <li>ID: {{task.id}}</li>
+            <li>UserId: {{task.userId}}</li>
+            <li>Title: {{task.title}}</li>
+            <li>Completed: {{task.completed}}</li>
+        </ul>
+    </li>
+</ul>
+}
+
+<h3>{{errorMsg()}}</h3>
+<h4>{{isLoading()}}</h4>

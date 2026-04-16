@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, Signal, signal } from '@angular/core';
 import { TaskService } from '../../services/task-service';
 
 @Component({
@@ -7,18 +7,14 @@ import { TaskService } from '../../services/task-service';
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
 })
-export class TodoList implements OnInit{
+export class TodoList{
   private taskService = inject(TaskService)
-  
-  tasks = this.taskService.tasks
+
   errorMsg = this.taskService.errorMsg
   isLoading = this.taskService.isLoading
-
-  ngOnInit(): void {
-    this.taskService.fetchTasks()
-  }
+  tasks = this.taskService.tasks
 
   refreshTasks() {
-    this.taskService.fetchTasks()
+    this.taskService.refreshTasks()
   }
 }

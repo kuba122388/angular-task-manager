@@ -1,25 +1,43 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 import { Task } from '../models/task';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
   private http = inject(HttpClient)
-  tasks = signal<Task[]>([])
+  private refreshTrigger = new BehaviorSubject(0)
 
   errorMsg = signal('')
   isLoading = signal(false)
+  tasks: Signal<Task[] | undefined>
 
+  constructor() {
+    this.tasks = toSignal(this.refreshTrigger.asObservable()
+      .pipe(
+        switchMap(() => this.fetchTasks()
+        )
+      )
+    )
+  }
 
-  fetchTasks() {
+  fetchTasks(): Observable<Task[]> {
     this.errorMsg.set('')
     this.isLoading.set(true)
-    this.http.get<Task[]>('https://jsonplaceholder.typicode.com/todos')
-      .subscribe({
-        next: (data) => { this.tasks.set(data); this.errorMsg.set(""); this.isLoading.set(false) },
-        error: () => { this.errorMsg.set('Failed to fetch task list.'); this.isLoading.set(false) }
-      })
+
+    return this.http.get<Task[]>('https://jsonplaceholder.typicode.com/todos')
+      .pipe(
+        tap({
+          next: () => this.isLoading.set(false),
+          error: (error) => { this.errorMsg.set(error), this.isLoading.set(false) }
+        }),
+      )
+  }
+
+  refreshTasks() {
+    this.refreshTrigger.next(0)
   }
 }

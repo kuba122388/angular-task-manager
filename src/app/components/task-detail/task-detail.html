@@ -1,0 +1,19 @@
+<p>task-detail works!</p>
+
+<button [routerLink]="['/tasks']">Go back</button>
+
+@if(isLoading()){
+<span>Loading...</span>
+}
+@else {
+<ul>
+    <li>
+        <ul>
+            <li>ID: {{task()?.id}}</li>
+            <li>UserId: {{task()?.userId}}</li>
+            <li>Title: {{task()?.title}}</li>
+            <li>Completed: {{task()?.completed}}</li>
+        </ul>
+    </li>
+</ul>
+}

@@ -9,10 +9,7 @@
     <ul>
         <li>
             <ul>
-                <li>ID: {{task.id}}</li>
-                <li>UserId: {{task.userId}}</li>
-                <li>Title: {{task.title}}</li>
-                <li>Completed: {{task.completed}}</li>
+                <li [routerLink]="['/tasks', task.id]">ID: {{task.id}}</li>
             </ul>
         </li>
     </ul>

@@ -1,20 +1,26 @@
-<h1>Todo list</h1>
-<button (click)="refreshTasks()">Refresh Tasks</button>
+<div class="page">
+  <div class="header">
+    <h1>Todo list</h1>
+    <button (click)="refreshTasks()" class="btn-refresh">Refresh</button>
+  </div>
 
-@if(isLoading()){
-<span>Loading...</span>
-}
-@else {
-    @for (task of tasks(); track task.id) {
-    <ul>
-        <li>
-            <ul>
-                <li [routerLink]="['/tasks', task.id]">ID: {{task.id}}</li>
-            </ul>
+  @if(isLoading()) {
+    <div class="loading">Loading...</div>
+  } @else {
+    <ul class="task-list">
+      @for (task of tasks(); track task.id) {
+        <li class="task-item" [routerLink]="['/tasks', task.id]">
+          <span class="task-id">#{{task.id}}</span>
+          <span class="task-title">{{task.title}}</span>
+          <span class="task-status" [class.done]="task.completed">
+            {{task.completed ? 'Done' : 'Pending'}}
+          </span>
         </li>
+      }
     </ul>
-    }
-}
+  }
 
-<h3>{{errorMsg()}}</h3>
-<h4>{{isLoading()}}</h4>
+  @if(errorMsg()) {
+    <p class="error">{{errorMsg()}}</p>
+  }
+</div>

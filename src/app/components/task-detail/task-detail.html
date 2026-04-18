@@ -1,19 +1,22 @@
-<p>task-detail works!</p>
+<div class="page">
+  <button [routerLink]="['/tasks']" class="btn-back">← Back</button>
 
-<button [routerLink]="['/tasks']">Go back</button>
+  @if(isLoading()) {
+    <div class="loading">Loading...</div>
+  } @else {
+    <div class="card">
+      <h2>Task #{{task()?.id}}</h2>
+      <p class="title">{{task()?.title}}</p>
+      <div class="meta">
+        <span>User ID: {{task()?.userId}}</span>
+        <span class="status" [class.done]="task()?.completed">
+          {{task()?.completed ? 'Done' : 'Pending'}}
+        </span>
+      </div>
+    </div>
+  }
 
-@if(isLoading()){
-<span>Loading...</span>
-}
-@else {
-<ul>
-    <li>
-        <ul>
-            <li>ID: {{task()?.id}}</li>
-            <li>UserId: {{task()?.userId}}</li>
-            <li>Title: {{task()?.title}}</li>
-            <li>Completed: {{task()?.completed}}</li>
-        </ul>
-    </li>
-</ul>
-}
+  @if(errorMsg()) {
+    <p class="error">{{errorMsg()}}</p>
+  }
+</div>

@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { Task } from '../models/task';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -18,7 +18,15 @@ export class TaskService {
   constructor() {
     this.tasks = toSignal(this.refreshTrigger.asObservable()
       .pipe(
-        switchMap(() => this.fetchTasks()
+        switchMap(() =>
+          this.fetchTasks().pipe(
+            catchError(
+              () => {
+                this.errorMsg.set("Failed to fetch tasks.")
+                return of([])
+              }
+            )
+          )
         )
       )
     )

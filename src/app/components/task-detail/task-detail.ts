@@ -16,6 +16,6 @@ export class TaskDetail {
   isLoading = this.taskService.isLoading
 
   taskId = this.taskDetail.snapshot.paramMap.get('id')
-  task = computed(() => this.taskService.tasks()?.find((task) => task.id === Number(this.taskId)))
+  task = computed(() => this.taskService.allTasks()?.find((task) => task.id === Number(this.taskId)))
 
 }

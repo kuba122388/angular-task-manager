@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { Task } from '../models/task';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs';
@@ -13,7 +13,10 @@ export class TaskService {
 
   errorMsg = signal('')
   isLoading = signal(false)
-  tasks: Signal<Task[] | undefined>
+
+  private tasks: Signal<Task[] | undefined>
+  private localTasks = signal<Task[]>([])
+  allTasks: Signal<Task[]>
 
   constructor() {
     this.tasks = toSignal(this.refreshTrigger.asObservable()
@@ -30,6 +33,7 @@ export class TaskService {
         )
       )
     )
+    this.allTasks = computed(() => [...(this.tasks() ?? []), ...this.localTasks()])
   }
 
   fetchTasks(): Observable<Task[]> {
@@ -43,6 +47,10 @@ export class TaskService {
           error: (error) => { this.errorMsg.set(error), this.isLoading.set(false) }
         }),
       )
+  }
+
+  addTask(title: string) {
+    this.localTasks.update((list) => [...list, { title: title, id: Math.max(...this.allTasks().map((o) => o.id), 0) + 1, userId: 10, completed: "Pending" }])
   }
 
   refreshTasks() {

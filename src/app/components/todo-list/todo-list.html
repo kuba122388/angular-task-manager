@@ -4,23 +4,28 @@
     <button (click)="refreshTasks()" class="btn-refresh">Refresh</button>
   </div>
 
+  <form [formGroup]="formControl">
+    <input formControlName="title">
+    <button type="button" [disabled]="formControl.invalid" (click) = "addTask()">Submit</button>
+  </form>
+
   @if(isLoading()) {
-    <div class="loading">Loading...</div>
+  <div class="loading">Loading...</div>
   } @else {
-    <ul class="task-list">
-      @for (task of tasks(); track task.id) {
-        <li class="task-item" [routerLink]="['/tasks', task.id]">
-          <span class="task-id">#{{task.id}}</span>
-          <span class="task-title">{{task.title}}</span>
-          <span class="task-status" [class.done]="task.completed">
-            {{task.completed ? 'Done' : 'Pending'}}
-          </span>
-        </li>
-      }
-    </ul>
+  <ul class="task-list">
+    @for (task of allTasks(); track task.id) {
+    <li class="task-item" [routerLink]="['/tasks', task.id]">
+      <span class="task-id">#{{task.id}}</span>
+      <span class="task-title">{{task.title}}</span>
+      <span class="task-status" [class.done]="task.completed">
+        {{task.completed ? 'Done' : 'Pending'}}
+      </span>
+    </li>
+    }
+  </ul>
   }
 
   @if(errorMsg()) {
-    <p class="error">{{errorMsg()}}</p>
+  <p class="error">{{errorMsg()}}</p>
   }
 </div>
